@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="class_transcript_tree_view">
+      <field name="name">class.transcript.tree</field>
+      <field name="model">class.transcript</field>
+      <field name="arch" type="xml">
+        <tree>
+          <field name="name"/>
+          <field name="points"/>
+          <field name="evaluate"/>
+        </tree>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="class_student_form_view">
+      <field name="name">class.student.form</field>
+      <field name="model">class.student</field>
+      <field name="arch" type="xml">
+        <form>
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="student_count" readonly="1"/>
+              </group>
+              <group>
+                <field name="avg_student_count"/>
+                <field name="good_student_count" readonly="1"/>
+                <field name="excellent_student_count" readonly="1"/>
+              </group>
+            </group>
+            <notebook>
+              <page string="Bảng điểm">
+                <field name="transcript_ids">
+                  <tree>
+                    <field name="name"/>
+                    <field name="points"/>
+                    <field name="evaluate"/>
+                  </tree>
+                  <form>
+                    <group>
+                      <field name="name"/>
+                      <field name="points"/>
+                    </group>
+                  </form>
+                </field>
+              </page>
+            </notebook>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.actions.act_window" id="class_student_list_action">
+      <field name="name">Lớp học</field>
+      <field name="res_model">class.student</field>
+      <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="main_class_student_menu" name="Lớp học"/>
+    <menuitem id="class_student_menu" name="Danh sách" parent="main_class_student_menu" action="class_student_list_action"/>
+  </data>
+</odoo>
