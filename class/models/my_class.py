@@ -1,6 +1,4 @@
-# -*- coding: utf-8 -*-
-
-from odoo import models, fields, api
+from odoo import models, fields, api, exceptions
 
 
 class ClassStudent(models.Model):
@@ -21,14 +19,13 @@ class ClassStudent(models.Model):
             record.avg_student_count = len(record.transcript_ids.filtered(lambda r: r.evaluate == 'Tb'))
             record.good_student_count = len(record.transcript_ids.filtered(lambda r: r.evaluate == 'K'))
             record.excellent_student_count = len(record.transcript_ids.filtered(lambda r: r.evaluate == 'G'))
-            
 
 
 class ClassTranscript(models.Model):
     _name = 'class.transcript'
     _description = 'Bảng điểm học sinh'
 
-    class_student_id = fields.Many2one('class.student', string='Lớp học', required=True, ondelete='cascade')
+    class_student_id = fields.Many2one('class.student', string='Lớp học1', required=True, ondelete='cascade')
     name = fields.Char(string='Tên học sinh')
     points = fields.Float(string='Điểm số')
     evaluate = fields.Selection([
@@ -40,9 +37,15 @@ class ClassTranscript(models.Model):
     @api.depends('points')
     def _compute_evaluate(self):
         for record in self:
-            if record.points <= 7:
+            if record.points <= 6.4:
                 record.evaluate = 'Tb'
-            elif record.points <= 8:
+            elif record.points <= 8.4:
                 record.evaluate = 'K'
             else:
                 record.evaluate = 'G'
+    
+    @api.constrains('points')
+    def _check_points_value(self):
+        for record in self:
+            if record.points < 0 or record.points > 10:
+                raise exceptions.ValidationError("Giá trị điểm không hợp lệ. Vui lòng nhập giá trị từ 0 đến 10.")
